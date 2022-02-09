@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import ButtonShoppingCart from '../components/ButtonShoppingCart';
 
 class Home extends Component {
   render() {
@@ -8,6 +9,7 @@ class Home extends Component {
         <p data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
         </p>
+        <ButtonShoppingCart />
       </div>
     );
   }
