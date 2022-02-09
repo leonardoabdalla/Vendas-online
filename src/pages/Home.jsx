@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import Categories from '../Components/Categories';
+import Categories from '../components/Categories';
 import { getCategories } from '../services/api';
 import ButtonShoppingCart from '../components/ButtonShoppingCart';
 
