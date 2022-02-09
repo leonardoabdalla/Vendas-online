@@ -1,24 +1,23 @@
 import React, { Component } from 'react';
 import Categories from '../Components/Categories';
-import { getCategories } from '../services/api.js';
+import { getCategories } from '../services/api';
+import ButtonShoppingCart from '../components/ButtonShoppingCart';
 
 class Home extends Component {
-
   state = {
     categories: [],
   }
 
   async componentDidMount() {
+    const categories = await getCategories();
 
-    const categories = await getCategories()
+    const categoriesMenu = categories.map((categorie, index) => (
+      <label htmlFor={ index } key={ categorie.name } data-testid="category">
+        { categorie.name }
+        <input id={ index } type="radio" />
+      </label>));
 
-     const categoriesMenu = categories.map((categorie) => <label key={ categorie.name } data-testid='category'>
-     { categorie.name }
-        <input type='radio' /> 
-        </label>)
-
-        this.setState( { categories: categoriesMenu })
-
+    this.setState({ categories: categoriesMenu });
   }
 
   render() {
@@ -29,7 +28,8 @@ class Home extends Component {
         <p data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
         </p>
-        <Categories categories={ categories }  />
+        <Categories categories={ categories } />
+        <ButtonShoppingCart />
       </div>
     );
   }
