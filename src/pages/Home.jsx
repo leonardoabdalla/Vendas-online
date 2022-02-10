@@ -8,29 +8,46 @@ class Home extends Component {
   state = {
     categories: [],
     inputValue: '',
+    selectedId: '',
     productsItems: [],
+
   }
 
   async componentDidMount() {
     const categories = await getCategories();
-    const categoriesMenu = categories.map((categorie, index) => (
-      <label htmlFor={ index } key={ categorie.name } data-testid="category">
+    const categoriesMenu = categories.map((categorie) => (
+      <label htmlFor={ categorie.id } key={ categorie.name } data-testid="category">
         { categorie.name }
-        <input id={ index } type="radio" />
+        <input
+          id={ categorie.id }
+          type="radio"
+          name="category"
+          onChange={ this.handleRadio }
+        />
       </label>));
 
     this.setState({ categories: categoriesMenu });
   }
 
-  handleClick = async () => {
-    const { inputValue } = this.state;
-    const products = await getProductsFromCategoryAndQuery('', inputValue);
+  handleRadio = async ({ target: { id } }) => {
+    this.filterResults(id);
+    this.setState({ selectedId: id });
+  }
+
+  filterResults = async (productId, inputValue) => {
+    const products = await getProductsFromCategoryAndQuery(productId, inputValue);
+
     const productsItems = products.results.map((product) => (
       <Card
         key={ product.id }
         { ...product }
       />));
     this.setState({ productsItems });
+  }
+
+  handleClick = async () => {
+    const { inputValue, selectedId } = this.state;
+    this.filterResults(selectedId, inputValue);
   }
 
   handleChange = ({ target: { value } }) => {
