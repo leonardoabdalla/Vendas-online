@@ -7,7 +7,8 @@ import Card from '../components/Card';
 class Home extends Component {
   state = {
     categories: [],
-    // result: [],
+    inputValue: '',
+    productsItems: [],
   }
 
   async componentDidMount() {
@@ -21,17 +22,31 @@ class Home extends Component {
     this.setState({ categories: categoriesMenu });
   }
 
-  handleClick = async ({ target: { value } }) => {
-    const product = await getProductsFromCategoryAndQuery(value);
+  handleClick = async () => {
+    const { inputValue } = this.state;
+    const products = await getProductsFromCategoryAndQuery('', inputValue);
+    const productsItems = products.results.map((product) => (
+      <Card
+        key={ product.id }
+        { ...product }
+      />));
+    this.setState({ productsItems });
+  }
 
-    console.log(product);
+  handleChange = ({ target: { value } }) => {
+    this.setState({ inputValue: value });
   }
 
   render() {
-    const { categories } = this.state;
+    const { categories, inputValue, productsItems } = this.state;
     return (
       <div>
-        <input data-testid="query-input" type="text" />
+        <input
+          data-testid="query-input"
+          type="text"
+          onChange={ this.handleChange }
+          value={ inputValue }
+        />
         <button onClick={ this.handleClick } data-testid="query-button" type="button">
           Pesquisar
         </button>
@@ -40,6 +55,7 @@ class Home extends Component {
         </p>
         <Categories categories={ categories } />
         <ButtonShoppingCart />
+        { productsItems }
       </div>
     );
   }
