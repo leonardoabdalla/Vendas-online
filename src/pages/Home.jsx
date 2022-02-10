@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom/cjs/react-router-dom.min';
 import Categories from '../components/Categories';
 import { getCategories, getProductsFromCategoryAndQuery } from '../services/api';
 import ButtonShoppingCart from '../components/ButtonShoppingCart';
@@ -10,7 +11,7 @@ class Home extends Component {
     inputValue: '',
     selectedId: '',
     productsItems: [],
-
+    detailsRedirect: false,
   }
 
   async componentDidMount() {
@@ -39,6 +40,8 @@ class Home extends Component {
 
     const productsItems = products.results.map((product) => (
       <Card
+        data-testid="product-detail-link"
+        detailsClick={ this.detailsClick }
         key={ product.id }
         { ...product }
       />));
@@ -54,10 +57,23 @@ class Home extends Component {
     this.setState({ inputValue: value });
   }
 
+  detailsClick = () => {
+    this.setState({ detailsRedirect: true });
+    console.log('entrei');
+  }
+
   render() {
-    const { categories, inputValue, productsItems } = this.state;
+    const { categories, inputValue, productsItems, detailsRedirect } = this.state;
     return (
       <div>
+        {
+          detailsRedirect && <Redirect
+            to={ {
+              pathname: '/productdetail',
+              // state: { id: '123' },
+            } }
+          />
+        }
         <input
           data-testid="query-input"
           type="text"
