@@ -40,8 +40,6 @@ class Home extends Component {
 
     const productsItems = products.results.map((product) => (
       <Card
-        data-testid="product-detail-link"
-        detailsClick={ this.detailsClick }
         key={ product.id }
         { ...product }
       />));
