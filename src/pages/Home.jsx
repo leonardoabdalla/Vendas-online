@@ -12,6 +12,7 @@ class Home extends Component {
     selectedId: '',
     productsItems: [],
     detailsRedirect: false,
+    shoppingCart: [],
   }
 
   async componentDidMount() {
@@ -30,6 +31,20 @@ class Home extends Component {
     this.setState({ categories: categoriesMenu });
   }
 
+  countShoppingCartItens = () => {
+    const { shoppingCart } = this.state;
+    const teste = shoppingCart.reduce((acc, { id, title }) => {
+      if (!acc[id]) {
+        acc[id] = { quantity: 1, title };
+      } else {
+        acc[id].quantity += 1;
+      }
+      acc[title] = title;
+      return acc;
+    }, {});
+    console.log(teste);
+  }
+
   handleRadio = async ({ target: { id } }) => {
     this.filterResults(id);
     this.setState({ selectedId: id });
@@ -44,6 +59,7 @@ class Home extends Component {
         detailsClick={ this.detailsClick }
         key={ product.id }
         { ...product }
+        addToCart={ this.addToCart }
       />));
     this.setState({ productsItems });
   }
@@ -60,6 +76,14 @@ class Home extends Component {
   detailsClick = () => {
     this.setState({ detailsRedirect: true });
     console.log('entrei');
+  }
+
+  addToCart = (obj) => {
+    const { shoppingCart } = this.state;
+    this.setState((prevState) => ({
+      shoppingCart: [...prevState.shoppingCart, obj],
+    }), () => localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart)));
+    this.countShoppingCartItens();
   }
 
   render() {
@@ -82,6 +106,7 @@ class Home extends Component {
         />
         <button onClick={ this.handleClick } data-testid="query-button" type="button">
           Pesquisar
+          countShoppingCartItens
         </button>
         <p data-testid="home-initial-message">
           Digite algum termo de pesquisa ou escolha uma categoria.
