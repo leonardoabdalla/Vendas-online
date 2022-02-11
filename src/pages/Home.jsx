@@ -11,7 +11,6 @@ class Home extends Component {
     inputValue: '',
     selectedId: '',
     productsItems: [],
-    detailsRedirect: false,
     shoppingCart: [],
   }
 
@@ -33,16 +32,15 @@ class Home extends Component {
 
   countShoppingCartItens = () => {
     const { shoppingCart } = this.state;
-    const teste = shoppingCart.reduce((acc, { id, title }) => {
+    const itemInformation = shoppingCart.reduce((acc, { id, title }) => {
       if (!acc[id]) {
         acc[id] = { quantity: 1, title };
       } else {
         acc[id].quantity += 1;
       }
-      acc[title] = title;
       return acc;
     }, {});
-    console.log(teste);
+    localStorage.setItem('shoppingCart', JSON.stringify(itemInformation));
   }
 
   handleRadio = async ({ target: { id } }) => {
@@ -73,17 +71,10 @@ class Home extends Component {
     this.setState({ inputValue: value });
   }
 
-  detailsClick = () => {
-    this.setState({ detailsRedirect: true });
-    console.log('entrei');
-  }
-
   addToCart = (obj) => {
-    const { shoppingCart } = this.state;
     this.setState((prevState) => ({
       shoppingCart: [...prevState.shoppingCart, obj],
-    }), () => localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart)));
-    this.countShoppingCartItens();
+    }), () => this.countShoppingCartItens());
   }
 
   render() {
