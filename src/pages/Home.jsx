@@ -11,7 +11,7 @@ class Home extends Component {
     inputValue: '',
     selectedId: '',
     productsItems: [],
-    shoppingCart: [],
+    shoppingCart: {},
   }
 
   async componentDidMount() {
@@ -30,17 +30,15 @@ class Home extends Component {
     this.setState({ categories: categoriesMenu });
   }
 
-  countShoppingCartItens = () => {
+  countShoppingCartItens = (obj) => {
+    const { id, title } = obj;
     const { shoppingCart } = this.state;
-    const itemInformation = shoppingCart.reduce((acc, { id, title }) => {
-      if (!acc[id]) {
-        acc[id] = { quantity: 1, title };
-      } else {
-        acc[id].quantity += 1;
-      }
-      return acc;
-    }, {});
-    localStorage.setItem('shoppingCart', JSON.stringify(itemInformation));
+    if (!shoppingCart[id]) {
+      shoppingCart[id] = { quantity: 1, title };
+    } else {
+      shoppingCart[id].quantity += 1;
+    }
+    localStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
   }
 
   handleRadio = async ({ target: { id } }) => {
@@ -71,8 +69,8 @@ class Home extends Component {
 
   addToCart = (obj) => {
     this.setState((prevState) => ({
-      shoppingCart: [...prevState.shoppingCart, obj],
-    }), () => this.countShoppingCartItens());
+      shoppingCart: { ...prevState.shoppingCart, obj },
+    }), this.countShoppingCartItens(obj));
   }
 
   render() {
